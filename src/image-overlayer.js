@@ -19,7 +19,6 @@ class ImageOverlayr {
     if (!overlay) throw new Error('Image overlay must be specified');
 
     const sharpType = this.getImageType(type, 'webp');
-  console.log('Overlay requested with: GRAVITY:', gravity, ' TOP: ', top, ' LEFT: ', left, ' TILE: ', tile)
 
     return new Promise((res, rej) => {
       this.sharp(new Buffer(image.buffer))

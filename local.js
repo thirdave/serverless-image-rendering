@@ -58,8 +58,6 @@ app.get('/overlay-image', async (req, res) => {
   const tile = (req.query && req.query.tile === 'true');
   const type = req.query && req.query.t;
 
-  console.log('Overlay requested with: GRAVITY:', gravity, ' TOP: ', top, ' LEFT: ', left, ' TILE: ', tile)
-
   const overlayData = await imageFetcher.fetchImage(overlay);
 
   return imageFetcher.fetchImage(fileName)
