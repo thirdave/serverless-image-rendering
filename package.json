@@ -6,6 +6,7 @@
     "serverless-offline": "serverless offline start",
     "start": "nodemon ./local.js",
     "deploy": "make package && serverless deploy --package lambda",
+    "redeploy": "serverless package && serverless deploy --package lambda",
     "package": "serverless package",
     "test": "jest",
     "test:watch": "jest --watchAll"

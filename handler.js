@@ -145,6 +145,7 @@ module.exports.overlayImage = (event, context, callback) => {
   return imageOverlayr.overlay(results.two, results.one, type, gravity, parseInt(top), parseInt(left), tile)
     .then(data => {
       const img = new Buffer(data.image.buffer, 'base64');
+      const contentType = data.contentType;
 
       callback(null, {
         statusCode: 200,
@@ -155,8 +156,8 @@ module.exports.overlayImage = (event, context, callback) => {
     })
     .catch(error => {
       console.error('Error:', error);
-      res.status(400).send(error.message || error);
-    });
+      callback(null, error);
+      });
 
 });
 };
