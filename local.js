@@ -1,6 +1,7 @@
 const app = require('express')();
 const bodyParser = require('body-parser');
 const Sharp = require('sharp');
+const async = require('async');
 const Types = require('./src/types');
 const ImageFetcher = require('./src/s3-image-fetcher');
 const ImageResizr = require('./src/image-resizer');
@@ -58,10 +59,26 @@ app.get('/overlay-image', async (req, res) => {
   const tile = (req.query && req.query.tile === 'true');
   const type = req.query && req.query.t;
 
-  const overlayData = await imageFetcher.fetchImage(overlay);
+  // const overlayData = await imageFetcher.fetchImage(overlay);
 
-  return imageFetcher.fetchImage(fileName)
-    .then(data => imageOverlayr.overlay(data.image, overlayData.image, type, gravity, parseInt(top), parseInt(left), tile))
+    async.series({
+    one: function(callback) {
+        imageFetcher.fetchImage(overlay).then(function(data) { 
+          console.log("Overlay", data);
+          var overlayData = data.image; 
+          callback(null, overlayData)
+        });
+    },
+    two: function(callback){
+        imageFetcher.fetchImage(fileName).then(function(data) { 
+          console.log("Image", data);
+          var imageData = data.image; 
+          callback(null, imageData)
+        });
+    }
+}, function(err, results) {
+    // console.log("RESULTS", results, err);
+  return imageOverlayr.overlay(results.two, results.one, type, gravity, parseInt(top), parseInt(left), tile)
     .then(data => {
       const img = new Buffer(data.image.buffer, 'base64');
 
@@ -74,6 +91,9 @@ app.get('/overlay-image', async (req, res) => {
       console.error('Error:', error);
       res.status(400).send(error.message || error);
     });
+
+});
+
 });
 
 app.get('/fetch-image', (req, res) => {
