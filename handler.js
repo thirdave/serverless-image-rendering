@@ -99,6 +99,8 @@ module.exports.resizeImage = (event, context, callback) => {
 
 module.exports.overlayImage = (event, context, callback) => {
 
+  console.log('OVERLAYING IMAGE');
+
   const imageFetcher = new ImageFetcher(process.env.BUCKET);
   const imageOverlayr = new ImageOverlayr(Types, Sharp);
 
@@ -117,12 +119,6 @@ module.exports.overlayImage = (event, context, callback) => {
     console.log('fileName:', fileName);
   }
 
-  if (!!status) {
-    return callback(null, {
-      statusCode: 200,
-      body: displayStatus(),
-    });
-  }
   return imageFetcher.fetchImage(fileName)
     .then(data => imageOverlayr.overlay(data.image, overlayData.image, type, gravity, parseInt(top), parseInt(left), tile))
     .then(data => {
