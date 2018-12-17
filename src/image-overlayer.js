@@ -4,7 +4,7 @@ class ImageOverlayr {
     this.sharp = Sharp;
   }
 
-  getImageType(type, def = 'webp') {
+  getImageType(type, def = 'jpg') {
     const found = this.types.find(item => item.sharp === type);
 
     if (!found && type === def) {
@@ -18,7 +18,7 @@ class ImageOverlayr {
     if (!image) throw new Error('An Image must be specified');
     if (!overlay) throw new Error('Image overlay must be specified');
 
-    const sharpType = this.getImageType(type, 'webp');
+    const sharpType = this.getImageType(type, 'jpg');
 
     return new Promise((res, rej) => {
       this.sharp(new Buffer(image.buffer))

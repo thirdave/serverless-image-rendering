@@ -4,7 +4,7 @@ class ImageResizr {
     this.sharp = Sharp;
   }
 
-  getImageType(type, def = 'webp') {
+  getImageType(type, def = 'jpg') {
     const found = this.types.find(item => item.sharp === type);
 
     if (!found && type === def) {
@@ -18,7 +18,7 @@ class ImageResizr {
     if (!image) throw new Error('An Image must be specified');
     if (!size) throw new Error('Image size must be specified');
 
-    const sharpType = this.getImageType(type, 'webp');
+    const sharpType = this.getImageType(type, 'jpg');
 
     return new Promise((res, rej) => {
       this.sharp(new Buffer(image.buffer))
