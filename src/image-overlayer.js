@@ -21,22 +21,25 @@ class ImageOverlayr {
     const sharpType = this.getImageType(type, 'jpg');
 
     var imageSharp = this.sharp(new Buffer(image.buffer));
+    var overlaySharp = this.sharp(new Buffer(overlay.buffer));
     return new Promise((res, rej) => {
       imageSharp
-        .metadata().then(function(metadata) {
-          console.log('Meta', metadata);
+        .metadata().then(function(imageMetadata) {
+          overlaySharp.metadata().then(function(overlayMetadata){
+            console.log(overlayMetadata);
           if(square){
-            var min = Math.min(metadata.width, metadata.height);
+            var min = Math.min(imageMetadata.width, imageMetadata.height);
             var width = min;
             var height = min;
           } else {
-            var width = metadata.width;
-            var height = metadata.height;
+            var width = imageMetadata.width;
+            var height = imageMetadata.height;
           }
+          overlaySharp.resize(width, height).toBuffer().then(overlayData=>{
           imageSharp
-            .overlayWith(overlay, { gravity: gravity, top: top, left: left, tile: tile })
-            .greyscale(greyscale)
             .resize(width, height)
+            .greyscale(greyscale)
+            .overlayWith(overlayData, { gravity: gravity, top: top, left: left, tile: tile })
             .toBuffer()
             .then(data => {
               return res({
@@ -45,6 +48,10 @@ class ImageOverlayr {
               });
             })
             .catch(err => rej(err))
+          });
+          // console.log(overlaySharp);
+
+          })
         })
 
     })
