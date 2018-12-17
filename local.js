@@ -18,6 +18,7 @@ app.get('/status', (req, res) => {
   res.status(200).send(displayStatus());
 });
 
+
 app.get('/resize-image', (req, res) => {
   const imageFetcher = new ImageFetcher(process.env.BUCKET);
   const imageResizr = new ImageResizr(Types, Sharp);
@@ -59,6 +60,9 @@ app.get('/overlay-image', async (req, res) => {
   const tile = (req.query && req.query.tile === 'true');
   const type = req.query && req.query.t;
 
+  const bw = (req.query && req.query.bw == 'true');
+  const square = (req.query && req.query.square == 'true');
+
   // const overlayData = await imageFetcher.fetchImage(overlay);
 
     async.series({
@@ -77,8 +81,8 @@ app.get('/overlay-image', async (req, res) => {
         });
     }
 }, function(err, results) {
-    // console.log("RESULTS", results, err);
-  return imageOverlayr.overlay(results.two, results.one, type, gravity, parseInt(top), parseInt(left), tile)
+    console.log("RESULTS", top, left);
+  return imageOverlayr.overlay(results.two, results.one, type, gravity, parseInt(top) || 0, parseInt(left) || 0, tile, bw, square)
     .then(data => {
       const img = new Buffer(data.image.buffer, 'base64');
 
