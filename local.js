@@ -81,7 +81,6 @@ app.get('/overlay-image', async (req, res) => {
         });
     }
 }, function(err, results) {
-    console.log("RESULTS", top, left);
   return imageOverlayr.overlay(results.two, results.one, type, gravity, parseInt(top) || 0, parseInt(left) || 0, tile, bw, square)
     .then(data => {
       const img = new Buffer(data.image.buffer, 'base64');

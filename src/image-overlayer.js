@@ -25,32 +25,29 @@ class ImageOverlayr {
     return new Promise((res, rej) => {
       imageSharp
         .metadata().then(function(imageMetadata) {
-          overlaySharp.metadata().then(function(overlayMetadata){
-            console.log(overlayMetadata);
-          if(square){
-            var min = Math.min(imageMetadata.width, imageMetadata.height);
-            var width = min;
-            var height = min;
-          } else {
-            var width = imageMetadata.width;
-            var height = imageMetadata.height;
-          }
-          overlaySharp.resize(width, height).toBuffer().then(overlayData=>{
-          imageSharp
-            .resize(width, height)
-            .greyscale(greyscale)
-            .overlayWith(overlayData, { gravity: gravity, top: top, left: left, tile: tile })
-            .toBuffer()
-            .then(data => {
-              return res({
-                image: data,
-                contentType: sharpType.contentType,
-              });
-            })
-            .catch(err => rej(err))
-          });
-          // console.log(overlaySharp);
-
+          overlaySharp.metadata().then(function(overlayMetadata) {
+            if (square) {
+              var min = Math.min(imageMetadata.width, imageMetadata.height);
+              var width = min;
+              var height = min;
+            } else {
+              var width = imageMetadata.width;
+              var height = imageMetadata.height;
+            }
+            overlaySharp.resize(width, height).toBuffer().then(overlayData => {
+              imageSharp
+                .resize(width, height)
+                .greyscale(greyscale)
+                .overlayWith(overlayData, { gravity: gravity, top: top, left: left, tile: tile })
+                .toBuffer()
+                .then(data => {
+                  return res({
+                    image: data,
+                    contentType: sharpType.contentType,
+                  });
+                })
+                .catch(err => rej(err))
+            });
           })
         })
 

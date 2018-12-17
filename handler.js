@@ -120,6 +120,9 @@ module.exports.overlayImage = (event, context, callback) => {
   const tile = (event.queryStringParameters && event.queryStringParameters.tile === 'true');
   const type = event.queryStringParameters && event.queryStringParameters.t;
 
+  const bw = (event.queryStringParameters && event.queryStringParameters.bw === 'true');
+  const square = (event.queryStringParameters && event.queryStringParameters.square === 'true');
+
   if (process.env.DEBUG) {
     console.log('bucketName:', imageFetcher._bucketName);
     console.log('fileName:', fileName);
@@ -142,7 +145,7 @@ module.exports.overlayImage = (event, context, callback) => {
     }
 }, function(err, results) {
     // console.log("RESULTS", results, err);
-  return imageOverlayr.overlay(results.two, results.one, type, gravity, parseInt(top), parseInt(left), tile)
+  return imageOverlayr.overlay(results.two, results.one, type, gravity, parseInt(top) || 0, parseInt(left) || 0, tile, bw, square)
     .then(data => {
       const img = new Buffer(data.image.buffer, 'base64');
       const contentType = data.contentType;
